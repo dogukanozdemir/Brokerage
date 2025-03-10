@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.inghubs'
-version = '0.0.1-SNAPSHOT'
+version = 'latest'
 
 java {
     toolchain {
