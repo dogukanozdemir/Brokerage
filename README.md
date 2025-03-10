@@ -160,8 +160,8 @@ This is a robust and secure Brokerage Platform API built with Java Spring Boot, 
 - **Request Body**:
   ```json
   {
-    orderIds : ["1" , "2"],
-    matchAll : false
+      "orderIds" : ["1", "2"],
+      "matchAll" : false
   }
   ```
 - **Response**: `200 OK`
