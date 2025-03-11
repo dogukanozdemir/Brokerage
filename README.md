@@ -149,9 +149,9 @@ You can explore and test all available endpoints using the provided Postman coll
 ### Assets
 
 #### Get Assets by Customer ID
-- **URL**: `/v1/assets/{customerId}`
+- **URL**: `/v1/assets?customerId=1`
 - **Method**: `GET`
-- **Path Parameters**:
+- **Request Parameters**:
   - `customerId`: Required, Customer ID
 - **Response**: `200 OK`
   ```json
@@ -161,6 +161,12 @@ You can explore and test all available endpoints using the provided Postman coll
       "assetName": "ING",
       "size": 100,
       "usableSize": 50
+    },
+    {
+    "customerId": "1",
+    "assetName": "TRY",
+    "size": 1000,
+    "usableSize": 500
     }
   ]
   ```
