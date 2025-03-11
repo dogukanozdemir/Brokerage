@@ -33,7 +33,7 @@ public class OrderBuyStrategyService implements OrderStrategy {
             .orElseThrow(
                 () ->
                     new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No TRY asset not found, please deposit TRY"));
+                        HttpStatus.BAD_REQUEST, "No TRY asset not found, please deposit TRY"));
 
     if (tryBalance.getUsableSize() < totalOrderSize) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough usable size");
@@ -63,7 +63,12 @@ public class OrderBuyStrategyService implements OrderStrategy {
         assetRepository
             .findById(new AssetId(order.getCustomerId(), TRY))
             .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No TRY assets found"));
+                () ->
+                    // Should never happen, since TRY is needed in the assets to create the order
+                    // in the first place
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No TRY was found in customers' account to deposit back"));
 
     tryAsset.setUsableSize(tryAsset.getUsableSize() + totalOrderSize);
     assetRepository.save(tryAsset);
@@ -78,6 +83,8 @@ public class OrderBuyStrategyService implements OrderStrategy {
             .findById(new AssetId(order.getCustomerId(), TRY))
             .orElseThrow(
                 () ->
+                    // Should never happen, since TRY is needed in the assets to create the order
+                    // in the first place
                     new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "No TRY assets found to complete the transaction"));
 

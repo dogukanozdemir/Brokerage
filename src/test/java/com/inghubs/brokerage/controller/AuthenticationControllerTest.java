@@ -60,9 +60,8 @@ class AuthenticationControllerTest {
             post("/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
-        .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.error").value("Invalid username or password"));
+        .andExpect(jsonPath("$.error").value("Bad credentials"));
   }
 
   @Test

@@ -1,6 +1,5 @@
 package com.inghubs.brokerage.service;
 
-import com.inghubs.brokerage.common.AuthenticationUtil;
 import com.inghubs.brokerage.dto.AssetDto;
 import com.inghubs.brokerage.dto.request.AddAssetRequest;
 import com.inghubs.brokerage.entity.Asset;
@@ -17,16 +16,15 @@ import org.springframework.stereotype.Service;
 public class AssetService {
 
   private final AssetRepository assetRepository;
-  private final AuthenticationUtil authenticationUtil;
+  private final CustomerService customerService;
 
   public List<AssetDto> listAssets(Long customerId) {
-    authenticationUtil.checkPermission(customerId);
-
+    customerService.checkCustomerAndPermission(customerId);
     return assetRepository.findByIdCustomerId(customerId).stream().map(this::mapToDto).toList();
   }
 
   public AssetDto addAsset(AddAssetRequest addAssetRequest) {
-    authenticationUtil.checkPermission(addAssetRequest.customerId());
+    customerService.checkCustomerAndPermission(addAssetRequest.customerId());
     Asset asset =
         assetRepository
             .findById(new AssetId(addAssetRequest.customerId(), addAssetRequest.assetName()))

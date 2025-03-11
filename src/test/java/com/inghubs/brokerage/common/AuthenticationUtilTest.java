@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationUtilTest {
@@ -59,26 +58,32 @@ class AuthenticationUtilTest {
   }
 
   @Test
-  void testCheckPermission_AsAdmin_ShouldNotThrow() {
+  void testDoesCustomerHavePermission_AsAdmin_ShouldReturnTrue() {
     when(customer.getRole()).thenReturn(Role.ADMIN);
-    assertDoesNotThrow(() -> authenticationUtil.checkPermission(999L));
+    when(customer.getId()).thenReturn(1L); // Irrelevant for admin but safe to mock
+
+    boolean hasPermission = authenticationUtil.doesCustomerHavePermission(999L);
+
+    assertTrue(hasPermission);
   }
 
   @Test
-  void testCheckPermission_WithMatchingCustomerId_ShouldNotThrow() {
+  void testDoesCustomerHavePermission_WithMatchingCustomerId_ShouldReturnTrue() {
     when(customer.getRole()).thenReturn(Role.USER);
     when(customer.getId()).thenReturn(1L);
-    assertDoesNotThrow(() -> authenticationUtil.checkPermission(1L));
+
+    boolean hasPermission = authenticationUtil.doesCustomerHavePermission(1L);
+
+    assertTrue(hasPermission);
   }
 
   @Test
-  void testCheckPermission_WithNonMatchingCustomerId_ShouldThrowUnauthorized() {
+  void testDoesCustomerHavePermission_WithNonMatchingCustomerId_ShouldReturnFalse() {
     when(customer.getRole()).thenReturn(Role.USER);
     when(customer.getId()).thenReturn(1L);
 
-    ResponseStatusException exception =
-        assertThrows(ResponseStatusException.class, () -> authenticationUtil.checkPermission(2L));
-    assertEquals(
-        "You don't have permission to access other customers' resources", exception.getReason());
+    boolean hasPermission = authenticationUtil.doesCustomerHavePermission(2L);
+
+    assertFalse(hasPermission);
   }
 }

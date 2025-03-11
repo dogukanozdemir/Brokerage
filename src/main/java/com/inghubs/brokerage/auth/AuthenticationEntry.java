@@ -30,7 +30,7 @@ public class AuthenticationEntry implements AuthenticationEntryPoint {
     ExceptionResponse exceptionResponse =
         ExceptionResponse.builder()
             .time(LocalDateTime.now())
-            .error("Invalid username or password")
+            .error("Invalid token or credentials")
             .build();
 
     response.getOutputStream().println(objectMapper.writeValueAsString(exceptionResponse));

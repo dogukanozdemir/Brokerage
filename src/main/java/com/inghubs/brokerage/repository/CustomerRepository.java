@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
   Optional<Customer> findByUsername(String username);
+
+  @Override
+  boolean existsById(Long id);
 }

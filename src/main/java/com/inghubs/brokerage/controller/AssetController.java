@@ -17,8 +17,8 @@ public class AssetController {
 
   private final AssetService assetService;
 
-  @GetMapping("/{customerId}")
-  public ResponseEntity<List<AssetDto>> getAssets(@PathVariable Long customerId) {
+  @GetMapping
+  public ResponseEntity<List<AssetDto>> getAssets(@RequestParam Long customerId) {
     return ResponseEntity.ok(assetService.listAssets(customerId));
   }
 

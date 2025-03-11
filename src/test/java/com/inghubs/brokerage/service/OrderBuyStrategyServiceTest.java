@@ -71,7 +71,7 @@ class OrderBuyStrategyServiceTest {
         assertThrows(
             ResponseStatusException.class, () -> orderBuyStrategyService.createOrder(request));
     assertEquals(
-        "404 NOT_FOUND \"No TRY asset not found, please deposit TRY\"", exception.getMessage());
+        "400 BAD_REQUEST \"No TRY asset not found, please deposit TRY\"", exception.getMessage());
   }
 
   @Test
@@ -110,7 +110,9 @@ class OrderBuyStrategyServiceTest {
     ResponseStatusException exception =
         assertThrows(
             ResponseStatusException.class, () -> orderBuyStrategyService.cancelOrder(order));
-    assertEquals("404 NOT_FOUND \"No TRY assets found\"", exception.getMessage());
+    assertEquals(
+        "404 NOT_FOUND \"No TRY was found in customers' account to deposit back\"",
+        exception.getMessage());
   }
 
   @Test

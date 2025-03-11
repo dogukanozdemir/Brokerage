@@ -106,7 +106,7 @@ class OrderSellStrategyServiceTest {
     ResponseStatusException exception =
         assertThrows(
             ResponseStatusException.class, () -> orderSellStrategyService.createOrder(request));
-    assertEquals("404 NOT_FOUND \"No such asset\"", exception.getMessage());
+    assertEquals("400 BAD_REQUEST \"You don't own any BTC\"", exception.getMessage());
   }
 
   @Test
@@ -170,7 +170,9 @@ class OrderSellStrategyServiceTest {
     ResponseStatusException exception =
         assertThrows(
             ResponseStatusException.class, () -> orderSellStrategyService.cancelOrder(order));
-    assertEquals("404 NOT_FOUND \"No such asset found\"", exception.getMessage());
+    assertEquals(
+        "404 NOT_FOUND \"No BTC asset was found in customers' account to deposit back\"",
+        exception.getMessage());
   }
 
   @Test

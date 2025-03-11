@@ -48,7 +48,7 @@ class AssetControllerTest {
     when(assetService.listAssets(customerId)).thenReturn(assetDtos);
 
     mockMvc
-        .perform(get("/v1/assets/{customerId}", customerId))
+        .perform(get("/v1/assets").param("customerId", String.valueOf(customerId)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].customerId").value(customerId))

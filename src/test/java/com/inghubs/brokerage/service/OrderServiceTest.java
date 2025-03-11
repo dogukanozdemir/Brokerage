@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.inghubs.brokerage.common.AuthenticationUtil;
 import com.inghubs.brokerage.dto.OrderDto;
 import com.inghubs.brokerage.dto.request.CreateOrderRequest;
 import com.inghubs.brokerage.dto.request.MatchOrdersRequest;
@@ -34,7 +33,7 @@ class OrderServiceTest {
 
   @Mock private OrderStrategyFactory orderStrategyFactory;
 
-  @Mock private AuthenticationUtil authenticationUtil;
+  @Mock private CustomerService customerService;
 
   @InjectMocks private OrderService orderService;
 
@@ -57,19 +56,19 @@ class OrderServiceTest {
     CreateOrderRequest request = new CreateOrderRequest(1L, "USD", OrderSide.BUY, 10.0, 100.0);
     when(orderStrategyFactory.getStrategy(OrderSide.BUY)).thenReturn(orderStrategy);
     when(orderStrategy.createOrder(request)).thenReturn(order);
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     OrderDto result = orderService.createOrder(request);
 
     assertEquals(order.getId(), result.id());
     assertEquals(order.getAssetName(), result.assetName());
-    verify(authenticationUtil).checkPermission(1L);
+    verify(customerService).checkCustomerAndPermission(1L);
   }
 
   @Test
   void createOrder_ShouldThrowExceptionWhenTRYAsset() {
     CreateOrderRequest request = new CreateOrderRequest(1L, "TRY", OrderSide.BUY, 10.0, 100.0);
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     assertThrows(ResponseStatusException.class, () -> orderService.createOrder(request));
   }
@@ -77,7 +76,7 @@ class OrderServiceTest {
   @Test
   void getAllOrdersWithoutDates_ShouldReturnOrders() {
     when(orderRepository.findByCustomerId(1L)).thenReturn(List.of(order));
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     List<OrderDto> result = orderService.getAllOrders(1L, null, null);
 
@@ -91,7 +90,7 @@ class OrderServiceTest {
     LocalDate endDate = LocalDate.of(2024, 12, 31);
     when(orderRepository.findByCustomerIdAndCreateDateBetween(any(), any(), any()))
         .thenReturn(List.of(order));
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     List<OrderDto> result = orderService.getAllOrders(1L, startDate, endDate);
 
@@ -106,12 +105,12 @@ class OrderServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(orderStrategyFactory.getStrategy(OrderSide.BUY)).thenReturn(orderStrategy);
     when(orderStrategy.cancelOrder(order)).thenReturn(cancelledOrder);
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     OrderDto result = orderService.cancelOrder(1L);
 
     assertEquals(OrderStatus.CANCELED, result.status());
-    verify(authenticationUtil).checkPermission(1L);
+    verify(customerService).checkCustomerAndPermission(1L);
   }
 
   @Test
@@ -126,7 +125,7 @@ class OrderServiceTest {
         Order.builder().id(1L).customerId(1L).status(OrderStatus.MATCHED).build();
 
     when(orderRepository.findById(1L)).thenReturn(Optional.of(nonPendingOrder));
-    doNothing().when(authenticationUtil).checkPermission(1L);
+    doNothing().when(customerService).checkCustomerAndPermission(1L);
 
     ResponseStatusException exception =
         assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(1L));

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-import com.inghubs.brokerage.common.AuthenticationUtil;
 import com.inghubs.brokerage.dto.AssetDto;
 import com.inghubs.brokerage.dto.request.AddAssetRequest;
 import com.inghubs.brokerage.entity.Asset;
@@ -23,7 +22,7 @@ class AssetServiceTest {
 
   @Mock private AssetRepository assetRepository;
 
-  @Mock private AuthenticationUtil authenticationUtil;
+  @Mock private CustomerService customerService;
 
   @InjectMocks private AssetService assetService;
 
@@ -38,7 +37,7 @@ class AssetServiceTest {
 
     List<AssetDto> assetDtos = assetService.listAssets(customerId);
 
-    verify(authenticationUtil, times(1)).checkPermission(customerId);
+    verify(customerService, times(1)).checkCustomerAndPermission(customerId);
     assertNotNull(assetDtos);
     assertEquals(1, assetDtos.size());
     AssetDto result = assetDtos.getFirst();
@@ -67,7 +66,7 @@ class AssetServiceTest {
 
     AssetDto result = assetService.addAsset(request);
 
-    verify(authenticationUtil, times(1)).checkPermission(customerId);
+    verify(customerService, times(1)).checkCustomerAndPermission(customerId);
     verify(assetRepository, times(1)).findById(assetId);
     verify(assetRepository, times(1)).save(any(Asset.class));
 
@@ -95,7 +94,7 @@ class AssetServiceTest {
 
     AssetDto result = assetService.addAsset(request);
 
-    verify(authenticationUtil, times(1)).checkPermission(customerId);
+    verify(customerService, times(1)).checkCustomerAndPermission(customerId);
     verify(assetRepository, times(1)).findById(assetId);
     verify(assetRepository, times(1)).save(existingAsset);
 

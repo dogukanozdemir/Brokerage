@@ -1,6 +1,5 @@
 package com.inghubs.brokerage.service;
 
-import com.inghubs.brokerage.common.AuthenticationUtil;
 import com.inghubs.brokerage.dto.OrderDto;
 import com.inghubs.brokerage.dto.request.CreateOrderRequest;
 import com.inghubs.brokerage.dto.request.MatchOrdersRequest;
@@ -29,12 +28,12 @@ public class OrderService {
 
   private final OrderRepository orderRepository;
   private final OrderStrategyFactory orderStrategyFactory;
-  private final AuthenticationUtil authenticationUtil;
+  private final CustomerService customerService;
 
   public OrderDto createOrder(CreateOrderRequest requestDto) {
-    authenticationUtil.checkPermission(requestDto.customerId());
+    customerService.checkCustomerAndPermission(requestDto.customerId());
     log.info("Creating order for customer {}", requestDto.customerId());
-    if (TRY.equals(requestDto.assetName())) {
+    if (TRY.equalsIgnoreCase(requestDto.assetName())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot directly buy/sell TRY");
     }
     OrderStrategy strategy = orderStrategyFactory.getStrategy(requestDto.orderSide());
@@ -45,7 +44,7 @@ public class OrderService {
   }
 
   public List<OrderDto> getAllOrders(Long customerId, LocalDate startDate, LocalDate endDate) {
-    authenticationUtil.checkPermission(customerId);
+    customerService.checkCustomerAndPermission(customerId);
     log.info("Retrieving orders for customer {}", customerId);
     List<Order> orders;
     if (startDate != null && endDate != null) {
@@ -63,14 +62,13 @@ public class OrderService {
 
   @Transactional
   public OrderDto cancelOrder(Long orderId) {
-
     log.info("Cancelling order with id {}", orderId);
     Order order =
         orderRepository
             .findById(orderId)
             .orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
-    authenticationUtil.checkPermission(order.getCustomerId());
+    customerService.checkCustomerAndPermission(order.getCustomerId());
     if (!OrderStatus.PENDING.equals(order.getStatus())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order status is not PENDING");
     }
