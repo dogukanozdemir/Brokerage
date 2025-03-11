@@ -277,14 +277,7 @@
 		}
 	],
 	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmdodWIiLCJpYXQiOjE3NDE2OTg1MDMsImV4cCI6MTc0MTc4NDkwM30.UYowpv4nKxPdYOB6wtvAnQPDqkaqDMqFjpOKT4uvTQWpe3TFkX-VvKr3Y2-ohHbciElQ-WfwG8A9GfjcqA2buw",
-				"type": "string"
-			}
-		]
+		"type": "bearer"
 	},
 	"event": [
 		{
