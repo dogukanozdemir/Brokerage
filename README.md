@@ -35,7 +35,7 @@ To maintain code quality and consistency, this formatting and build verification
 When you first launch the application, you'll need to register as a new customer and select your preferred role.
 Once registered, you can deposit funds — either TRY or other assets — into your account using the Add Asset endpoint. This will allow you to start buying and selling stocks.
 
-You can explore and test all available endpoints using the provided Postman collection, which is available [here]
+You can explore and test all available endpoints using the provided Postman collection, which is available in the base directory of the project(Brokarage.postman_collection.json)
 
 ## API Specification
 
