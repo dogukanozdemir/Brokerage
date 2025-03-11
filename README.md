@@ -1,7 +1,41 @@
 # Brokerage Platform API
 
+## Table of Contents
+- [Overview](#overview)
+- [Technology](#technology)
+- [Usage](#usage)
+- [API Specification](#api-specification)
+- [Build and Run](#build-and-run)
+- [License](#license)
+
+## Overview
+
 This is a robust and secure Brokerage Platform API built with Java Spring Boot, designed to handle core brokerage functionalities including user authentication, asset management, order processing, and administrative tasks.
 
+The API is implemented using Java Spring Boot, and utilizes a H2 database for storing data. The API supports the following features:
+
+- Registering New Customer
+- Logining in Customer
+- List all orders of the customer
+- Placing a new order
+- Cancelling an order
+- Get All Assets of customer
+- Add an Asset
+- Match orders (ADMIN)
+
+## Technology
+
+This project is built with **Spring 3.4.3** and **Java 21**, using **H2** as the database and **Flyway** for database migrations.
+
+Additionally, the project enforces **Spotless** as a code formatter — meaning any unformatted code will cause the build to fail.
+To maintain code quality and consistency, this formatting and build verification can also be integrated as a GitHub Action, ensuring that every pull request (PR) is automatically checked and cannot be merged unless the project builds successfully.
+
+## Usage
+
+When you first launch the application, you'll need to register as a new customer and select your preferred role.
+Once registered, you can deposit funds — either TRY or other assets — into your account using the Add Asset endpoint. This will allow you to start buying and selling stocks.
+
+You can explore and test all available endpoints using the provided Postman collection, which is available [here]
 
 ## API Specification
 
@@ -189,3 +223,44 @@ This is a robust and secure Brokerage Platform API built with Java Spring Boot, 
     }
   ]
   ```
+## Build and Run
+
+### Local Setup
+
+#### Build and Run Locally
+1. Clone the repository
+   ```bash
+   git clone https://github.com/dogukanozdemir/Brokerage.git
+   cd Brokarage
+   ```
+
+2. Build the project
+   ```bash
+   ./gradlew clean build
+   ```
+
+3. Run the application
+   ```bash
+   ./gradlew bootRun
+   ```
+
+The API will be available at `http://localhost:8080`
+
+### Docker Setup
+
+#### Run with Docker
+
+1. Pull the Docker image
+   ```bash
+   docker pull dogukanozdemirr/ing-app:latest
+   ```
+
+2. Run the container
+   ```bash
+   docker run -it -p 8080:8080 dogukanozdemirr/ing-app:latest
+   ```
+
+## License
+
+This project is licensed under the MIT License - see (here)[https://opensource.org/license/mit] for details:
+
