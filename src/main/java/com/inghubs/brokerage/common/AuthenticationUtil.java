@@ -22,6 +22,7 @@ public class AuthenticationUtil {
         .id(customer.getId())
         .username(customer.getUsername())
         .password(customer.getPassword())
+        .role(customer.getRole())
         .build();
   }
 

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,12 +40,29 @@ class AuthenticationControllerTest {
 
     mockMvc
         .perform(
-            post("/v1/login")
+            post("/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("dogukan"))
         .andExpect(jsonPath("$.token").value("dummyToken"));
+  }
+
+  @Test
+  void testLogin_BadCredentials() throws Exception {
+    LoginRequest loginRequest = new LoginRequest("dogukan", "wrongPassword");
+
+    when(authenticationService.login(loginRequest))
+        .thenThrow(new BadCredentialsException("Bad credentials"));
+
+    mockMvc
+        .perform(
+            post("/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.error").value("Invalid username or password"));
   }
 
   @Test
@@ -57,7 +75,7 @@ class AuthenticationControllerTest {
 
     mockMvc
         .perform(
-            post("/v1/register")
+            post("/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)))
         .andExpect(status().isCreated())

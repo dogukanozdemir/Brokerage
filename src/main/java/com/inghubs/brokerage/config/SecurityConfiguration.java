@@ -1,8 +1,9 @@
 package com.inghubs.brokerage.config;
 
 import com.inghubs.brokerage.auth.AuthenticationEntry;
-import com.inghubs.brokerage.service.CustomerDetailsService;
+import com.inghubs.brokerage.auth.CustomAccessDeniedHandler;
 import com.inghubs.brokerage.auth.jwt.JwtAuthenticationFilter;
+import com.inghubs.brokerage.service.CustomerDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,8 @@ public class SecurityConfiguration {
 
   private final AuthenticationEntry authenticationEntryPoint;
 
+  private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -45,7 +48,10 @@ public class SecurityConfiguration {
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(
-            exceptions -> exceptions.authenticationEntryPoint(authenticationEntryPoint))
+            exceptions ->
+                exceptions
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler))
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }

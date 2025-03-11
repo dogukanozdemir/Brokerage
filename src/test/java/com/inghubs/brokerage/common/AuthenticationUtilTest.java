@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.inghubs.brokerage.dto.AuthenticatedCustomer;
+import com.inghubs.brokerage.entity.Customer;
 import com.inghubs.brokerage.enums.Role;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ class AuthenticationUtilTest {
 
   @Mock private Authentication authentication;
 
-  @Mock private AuthenticatedCustomer customer;
+  @Mock private Customer customer;
 
   @BeforeEach
   public void setUp() {
@@ -38,6 +39,26 @@ class AuthenticationUtilTest {
   }
 
   @Test
+  void testGetAuthenticatedCustomer_ReturnsExpectedAuthenticatedCustomer() {
+    Long id = 1L;
+    String username = "testUser";
+    String password = "secret";
+    Role role = Role.USER;
+    when(customer.getId()).thenReturn(id);
+    when(customer.getUsername()).thenReturn(username);
+    when(customer.getPassword()).thenReturn(password);
+    when(customer.getRole()).thenReturn(role);
+
+    AuthenticatedCustomer result = authenticationUtil.getAuthenticatedCustomer();
+
+    assertNotNull(result);
+    assertEquals(id, result.getId());
+    assertEquals(username, result.getUsername());
+    assertEquals(password, result.getPassword());
+    assertEquals(role, result.getRole());
+  }
+
+  @Test
   void testCheckPermission_AsAdmin_ShouldNotThrow() {
     when(customer.getRole()).thenReturn(Role.ADMIN);
     assertDoesNotThrow(() -> authenticationUtil.checkPermission(999L));
@@ -45,7 +66,6 @@ class AuthenticationUtilTest {
 
   @Test
   void testCheckPermission_WithMatchingCustomerId_ShouldNotThrow() {
-
     when(customer.getRole()).thenReturn(Role.USER);
     when(customer.getId()).thenReturn(1L);
     assertDoesNotThrow(() -> authenticationUtil.checkPermission(1L));

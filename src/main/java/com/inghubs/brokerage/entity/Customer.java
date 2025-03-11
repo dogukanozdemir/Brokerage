@@ -2,13 +2,12 @@ package com.inghubs.brokerage.entity;
 
 import com.inghubs.brokerage.enums.Role;
 import jakarta.persistence.*;
+import java.util.Collection;
+import java.util.List;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name = "customers")
