@@ -1,6 +1,6 @@
 package com.inghubs.brokerage.auth.jwt;
 
-import com.inghubs.brokerage.auth.CustomerDetailsService;
+import com.inghubs.brokerage.service.CustomerDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

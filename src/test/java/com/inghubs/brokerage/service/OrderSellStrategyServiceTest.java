@@ -25,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-// TODO: no stream match
 class OrderSellStrategyServiceTest {
 
   @Mock private OrderRepository orderRepository;

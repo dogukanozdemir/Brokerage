@@ -1,7 +1,5 @@
-package com.inghubs.brokerage.auth;
+package com.inghubs.brokerage.service;
 
-import com.inghubs.brokerage.dto.AuthenticatedCustomer;
-import com.inghubs.brokerage.entity.Customer;
 import com.inghubs.brokerage.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,14 +15,8 @@ public class CustomerDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Customer customer =
-        customerRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
-    return AuthenticatedCustomer.builder()
-        .id(customer.getId())
-        .username(customer.getUsername())
-        .role(customer.getRole())
-        .build();
+    return customerRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
   }
 }

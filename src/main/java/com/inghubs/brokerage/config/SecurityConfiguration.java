@@ -1,8 +1,9 @@
 package com.inghubs.brokerage.config;
 
 import com.inghubs.brokerage.auth.AuthenticationEntry;
-import com.inghubs.brokerage.auth.CustomerDetailsService;
+import com.inghubs.brokerage.service.CustomerDetailsService;
 import com.inghubs.brokerage.auth.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,22 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
   private final CustomerDetailsService customerDetailsService;
 
   private final JwtAuthenticationFilter authenticationFilter;
 
-  private final AuthenticationEntry authEntryPoint;
-
-  public SecurityConfiguration(
-      CustomerDetailsService customerDetailsService,
-      JwtAuthenticationFilter authenticationFilter,
-      AuthenticationEntry authEntryPoint) {
-    this.customerDetailsService = customerDetailsService;
-    this.authenticationFilter = authenticationFilter;
-    this.authEntryPoint = authEntryPoint;
-  }
+  private final AuthenticationEntry authenticationEntryPoint;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,28 +35,29 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/v1/login", "/v1/register")
+                    .requestMatchers("/v1/auth/**")
                     .permitAll()
                     .requestMatchers("/v1/admin/**")
                     .hasAnyAuthority("ADMIN")
                     .anyRequest()
                     .authenticated())
         .userDetailsService(customerDetailsService)
-        .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(authenticationEntryPoint))
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 
   @Bean
   public AuthenticationManager authenticationManager(
       AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 }

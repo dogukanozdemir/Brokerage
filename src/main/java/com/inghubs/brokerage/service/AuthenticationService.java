@@ -26,8 +26,6 @@ public class AuthenticationService {
 
   public AuthenticationResponse login(LoginRequest loginRequest) {
     String username = loginRequest.username();
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, loginRequest.password()));
     Customer customer =
         customerRepository
             .findByUsername(username)
@@ -36,6 +34,9 @@ public class AuthenticationService {
                     new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("Customer with name %s not found", username)));
+
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, loginRequest.password()));
 
     String token = jwtService.generateToken(customer);
     return AuthenticationResponse.builder().username(username).token(token).build();
